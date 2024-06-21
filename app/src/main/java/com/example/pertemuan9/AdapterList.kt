@@ -28,7 +28,7 @@ class AdapterList(private val itemLists: List<ItemList>) :
         holder.judul.text = item.judul
         holder.subJudul.text = item.subJudul
         Glide.with(holder.imageView.context)
-            .load(item.imageURL)
+            .load(item.imageUrl)
             .into(holder.imageView)
     }
 

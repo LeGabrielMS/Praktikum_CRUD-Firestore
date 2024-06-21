@@ -1,7 +1,8 @@
 package com.example.pertemuan9
 
-class ItemList (
+class ItemList(
+    var id: String,
     var judul: String,
     var subJudul: String,
-    var imageURL: String
+    var imageUrl: String
 )

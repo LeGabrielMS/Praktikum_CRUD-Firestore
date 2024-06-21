@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.pertemuan9" />
+                  <option name="mobileSdkAppId" value="1:31790483395:android:1cd72ccc76148194431f76" />
+                  <option name="projectId" value="uts-login-pm1" />
+                  <option name="projectNumber" value="31790483395" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

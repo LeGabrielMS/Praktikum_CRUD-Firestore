@@ -1,41 +1,84 @@
 package com.example.pertemuan9
 
+import android.annotation.SuppressLint
+import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var floatingActionButton: FloatingActionButton
+    private lateinit var myAdapter: AdapterList
+    private lateinit var itemList: MutableList<ItemList>
+    private lateinit var db: FirebaseFirestore
+    private lateinit var progressDialog: ProgressDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inisialisasi RecyclerView
+        //Inisialisasi Firebase
+        FirebaseApp.initializeApp(this)
+        db = FirebaseFirestore.getInstance()
+
+        // Inisialisasi RecyclerView & floatingButton
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        val floatingActionButton = findViewById<FloatingActionButton>(R.id.floatAddNews)
+        progressDialog = ProgressDialog(this@MainActivity).apply {
+            setTitle("Loading...")
+        }
 
-        // recyclerView.layoutManager = GridLayoutManager(this, 3)
+        //Setup RecyclerView
         recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        itemList = ArrayList()
+        myAdapter = AdapterList(itemList)
+        recyclerView.adapter = myAdapter
 
-        val itemList = listOf(
-            ItemList(
-                "Indonesia Merdeka",
-                "Indonesia Merdeka pada tanggal 17 Agustus 1945",
-                "https://maukuliah.ap-south-1.linodeobjects.com/gallery/043059/Gedung%201%20STTB-thumbnail.jpg"
-            ),
-            ItemList(
-                "Universitas Teknologi Bandung",
-                "Universitas Teknologi Bandung merupakan Universitas yang berada di Bandung, Jawa Barat",
-                "https://maukuliah.ap-south-1.linodeobjects.com/gallery/043059/Gedung%201%20STTB-thumbnail.jpg"
-            ),
-            ItemList(
-                "Natal 2023",
-                "Natal 2023 merupakan hari besar nasional Indonesia",
-                "https://maukuliah.ap-south-1.linodeobjects.com/gallery/043059/Gedung%201%20STTB-thumbnail.jpg"
-            )
-        )
+        floatingActionButton.setOnClickListener {
+            val toAddPage = Intent(this@MainActivity, NewsAdd::class.java)
+            startActivity(toAddPage)
+        }
 
-        val adapter = AdapterList(itemList)
-        recyclerView.adapter = adapter
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getData() {
+        progressDialog.show()
+        db.collection("news")
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    itemList.clear()
+                    for (document in task.result) {
+                        val item = ItemList(
+                            document.id,
+                            document.getString("title") ?: "",
+                            document.getString("desc") ?: "",
+                            document.getString("imageUrl") ?: ""
+                        )
+                        itemList.add(item)
+                        Log.d("Data", "${document.id} => ${document.data}")
+                    }
+                    myAdapter.notifyDataSetChanged()
+                } else {
+                    Log.w("Data", "Error getting documents.", task.exception)
+                }
+                progressDialog.dismiss()
+            }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        //Fetch data from Firestore
+        getData()
+    }
+
 }
