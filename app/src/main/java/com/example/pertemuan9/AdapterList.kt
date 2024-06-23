@@ -3,6 +3,7 @@ package com.example.pertemuan9
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,17 @@ import com.bumptech.glide.Glide
 
 class AdapterList(private val itemLists: List<ItemList>) :
     RecyclerView.Adapter<AdapterList.ViewHolder>() {
+
+    private var listener: OnItemClickListener? = null
+
+    interface OnItemClickListener {
+        fun onItemClick(item: ItemList)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
+
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.item_image)
@@ -30,10 +42,15 @@ class AdapterList(private val itemLists: List<ItemList>) :
         Glide.with(holder.imageView.context)
             .load(item.imageUrl)
             .into(holder.imageView)
+
+        holder.itemView.setOnClickListener {
+            listener?.onItemClick(item)
+        }
     }
 
     override fun getItemCount(): Int {
         return itemLists.size
     }
+
 
 }

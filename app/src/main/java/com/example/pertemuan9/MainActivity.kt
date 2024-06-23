@@ -47,6 +47,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(toAddPage)
         }
 
+        myAdapter.setOnItemClickListener(object : AdapterList.OnItemClickListener {
+            override fun onItemClick(item: ItemList) {
+                val intent = Intent(this@MainActivity, NewsDetail::class.java).apply {
+                    putExtra("id", item.id)
+                    putExtra("title", item.judul)
+                    putExtra("desc", item.subJudul)
+                    putExtra("imageUrl", item.imageUrl)
+                }
+                startActivity(intent)
+            }
+        })
+
     }
 
     @SuppressLint("NotifyDataSetChanged")

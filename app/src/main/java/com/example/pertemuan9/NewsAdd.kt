@@ -5,11 +5,13 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
@@ -78,6 +80,19 @@ class NewsAdd : AppCompatActivity() {
                 finish()
             }
         }
+
+        val updateOption = intent
+        if (updateOption != null) {
+            id = updateOption.getStringExtra("id")
+            judul = updateOption.getStringExtra("title")
+            deskripsi = updateOption.getStringExtra("desc")
+            image = updateOption.getStringExtra("imageUrl")
+
+            title.setText(judul)
+            desc.setText(deskripsi)
+            Glide.with(this@NewsAdd).load(image).into(imageView)
+        }
+
     }
 
     private fun openFileChooser() {
@@ -95,7 +110,6 @@ class NewsAdd : AppCompatActivity() {
         }
     }
 
-
     @SuppressLint("SetTextI18n")
     private fun saveData(newsTitle: String, newsDesc: String, imageUrl: String) {
         val news = HashMap<String, Any>()
@@ -103,23 +117,48 @@ class NewsAdd : AppCompatActivity() {
         news["desc"] = newsDesc
         news["imageUrl"] = imageUrl
 
-        dbNews.collection("news")
-            .add(news)
-            .addOnSuccessListener {
-                progressDialog.dismiss()
-                Toast.makeText(this@NewsAdd, "News added successfully", Toast.LENGTH_LONG).show()
-                title.setText("")
-                desc.setText("")
-                imageView.setImageResource(0) //Clear Image View
-            }
-            .addOnFailureListener { e ->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    this@NewsAdd,
-                    "Failed to add news: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+        if (id != null) {
+            // Update News
+            dbNews.collection("news")
+                .document(id ?: "")
+                .update(news)
+                .addOnSuccessListener {
+                    progressDialog.dismiss()
+                    Toast.makeText(this@NewsAdd, "News updated successfully", Toast.LENGTH_LONG)
+                        .show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        this@NewsAdd,
+                        "Failed to update news: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.w("NewsAdd", "Error updating document", e)
+                }
+        } else {
+            // Add News
+            dbNews.collection("news")
+                .add(news)
+                .addOnSuccessListener {
+                    progressDialog.dismiss()
+                    Toast.makeText(this@NewsAdd, "News added successfully", Toast.LENGTH_LONG)
+                        .show()
+                    title.setText("")
+                    desc.setText("")
+                    imageView.setImageResource(0) //Clear Image View
+                }
+                .addOnFailureListener { e ->
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        this@NewsAdd,
+                        "Failed to add news: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+        }
+
 
     }
 
@@ -146,4 +185,5 @@ class NewsAdd : AppCompatActivity() {
 
         }
     }
+
 }
