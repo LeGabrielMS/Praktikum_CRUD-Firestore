@@ -6,12 +6,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
@@ -33,6 +36,7 @@ class NewsAdd : AppCompatActivity() {
 
     private lateinit var dbNews: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
+    private lateinit var mAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +46,7 @@ class NewsAdd : AppCompatActivity() {
         //inisialisasi Firebase
         dbNews = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
+        mAuth = FirebaseAuth.getInstance()
 
         //inisialisasi UI Components
         title = findViewById(R.id.title)
@@ -184,6 +189,26 @@ class NewsAdd : AppCompatActivity() {
                 }
 
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+
+        if (id == R.id.action_logout) {
+            mAuth.signOut()
+            Toast.makeText(this@NewsAdd, "Logged Out Successfully!", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this@NewsAdd, DefaultActivity::class.java)
+            startActivity(intent)
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

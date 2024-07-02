@@ -2,4 +2,7 @@
     <string name="app_name">Pertemuan 9</string>
     <string name="judul">Judul</string>
     <string name="deskripsi">Deskripsi</string>
+
+    <string name="default_web_client_id">31790483395-u2gqk2o9soe6j16fnf8b6ai9b1lpjbk4.apps.googleusercontent.com</string>
+
 </resources>
