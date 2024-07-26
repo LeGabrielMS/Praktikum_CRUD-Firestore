@@ -5,6 +5,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("C:\\Users\\thedi\\AndroidStudioProjects\\Pertemuan9\\Pertemuan9.jks")
+            storePassword = "Leefya27"
+            keyAlias = "Pert9Alias"
+            keyPassword = "Leefya27"
+        }
+    }
     namespace = "com.example.pertemuan9"
     compileSdk = 34
 

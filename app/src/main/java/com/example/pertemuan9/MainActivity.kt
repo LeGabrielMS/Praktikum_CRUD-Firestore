@@ -17,8 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var floatingActionButton: FloatingActionButton
+
     private lateinit var myAdapter: AdapterList
     private lateinit var itemList: MutableList<ItemList>
     private lateinit var db: FirebaseFirestore

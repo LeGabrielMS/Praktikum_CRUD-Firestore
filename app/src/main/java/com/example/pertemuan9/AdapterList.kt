@@ -22,7 +22,6 @@ class AdapterList(private val itemLists: List<ItemList>) :
         this.listener = listener
     }
 
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.item_image)
         val judul: TextView = itemView.findViewById(R.id.title)
